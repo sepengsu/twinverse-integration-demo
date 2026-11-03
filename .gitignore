@@ -1,0 +1,17 @@
+.env
+.env.*
+!.env.example
+.venv/
+.uv-cache/
+.uv-python/
+.claude/
+*venv/
+__pycache__/
+*.py[cod]
+/logs/
+/recordings/
+**/*zip
+runtime-verification/
+dist/
+docs/
+deployment/

@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light">
+  <title>A2A Console · 에이전트 통신</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%231b5548'/%3E%3Cpath d='M16 44 32 16 48 44M23 34h18' fill='none' stroke='white' stroke-width='5'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="/dashboard/assets/styles.css">
+  <link rel="stylesheet" href="/dashboard/assets/monitor.css">
+  <script src="/dashboard/assets/app.js" defer></script>
+</head>
+<body class="monitor">
+  <aside class="sidebar">
+    <a class="brand" href="/dashboard" aria-label="A2A Console 홈"><span class="brand-mark">a<span>2</span>a</span><span>Agent Console<small>MANUFACTURING WORKSPACE</small></span></a>
+    <div class="nav-label">WORKSPACE</div>
+    <a href="#overview" class="nav-item active"><span class="nav-icon">◈</span>통신 대시보드<span class="nav-count">3</span></a>
+    <div class="sidebar-rule"></div>
+    <div class="nav-label history-label">최근 작업 <span id="history-count">0</span></div>
+    <div id="history" class="history"><div class="history-empty">첫 작업을 실행하면<br>이곳에 기록이 쌓입니다.</div></div>
+    <div class="sidebar-bottom"><span class="small-dot"></span><div>Local workspace<small>Super Agent · A2A</small></div><span class="version">v0.1</span></div>
+  </aside>
+
+  <main id="overview">
+    <header class="topbar"><div class="breadcrumb">Workspace <span>/</span><strong>에이전트 통신</strong></div><div class="topbar-right"><button id="presentation" class="secondary-button" type="button">시연 보기</button><span id="unity-live" class="runtime-pill">Unity 확인 중</span><span id="live" class="live connecting"><i></i>연결 중</span><button id="refresh" class="icon-button" title="연결 상태 새로고침" aria-label="연결 상태 새로고침">↻</button></div></header>
+    <div class="content">
+      <div class="page-heading"><div><div class="eyebrow">AGENT-TO-AGENT OBSERVABILITY</div><h1>에이전트 통신</h1><p>Supervisor, 중앙대, 성균관대의 실제 요청과 결과를 확인합니다.</p></div><div class="heading-note"><span class="small-dot"></span>계획 생성 모드 <span class="mono">plan_only</span></div></div>
+      <div id="error-banner" class="error-banner" role="alert" hidden></div>
+
+      <section class="stats" aria-label="통신 요약">
+        <div class="stat"><span>연결된 에이전트</span><div><strong id="stat-agents">—</strong><small>/ 3</small><span class="stat-icon">◉</span></div><p id="stat-agent-note">연결 상태 확인 중</p></div>
+        <div class="stat"><span>전체 작업</span><div><strong id="stat-runs">0</strong><small>runs</small><span class="stat-icon">▤</span></div><p id="stat-run-note">새로운 작업을 기다리는 중</p></div>
+        <div class="stat"><span>완료한 작업</span><div><strong id="stat-completed">0</strong><small id="stat-ratio">—</small><span class="stat-icon">✓</span></div><p>현재 서버에 보관된 작업 기준</p></div>
+        <div class="stat"><span>A2A 메시지</span><div><strong id="stat-messages">0</strong><small>requests</small><span class="stat-icon">⇄</span></div><p>실제 메시지 전송 요청 수</p></div>
+      </section>
+
+      <div class="upper-grid">
+        <section class="panel network-panel" aria-label="에이전트 연결 구조">
+          <div class="panel-header"><h2>에이전트 네트워크</h2><div class="network-tools"><span class="flow-legend"><i class="request-key"></i>요청 <i class="response-key"></i>응답</span><button id="follow-live" class="secondary-button" type="button" aria-pressed="true">실시간 따라가기 ON</button></div></div>
+          <div class="communication-summary" aria-live="polite"><div id="current-activity" class="activity"><span>선택한 작업 · 현재 처리</span><strong id="activity-agent">작업 대기</strong><small id="activity-detail">새 작업을 실행해 주세요.</small></div><div id="latest-response" class="latest-response"><span>최근 Agent 응답</span><strong id="response-agent">응답 대기</strong><small id="response-detail">실제 수신한 Agent 이름과 시각을 표시합니다.</small></div></div>
+          <div class="diagram">
+            <button type="button" id="agent-cau_process" class="agent-card" data-agent="cau_process"><div class="agent-top"><span class="avatar cau">C</span><span class="agent-status unknown">확인 중</span></div><h3>중앙대 Agent</h3><div class="agent-role">공정 계획 · 설비 선택</div><div class="agent-endpoint mono">—</div><div class="agent-footer"><span class="tag amber">Dummy backend</span><span class="agent-latency">—</span></div><div class="node-state" data-node="T1">작업 대기</div></button>
+            <div class="connector" id="edge-cau"><span>요청 ←</span><svg viewBox="0 0 90 32" aria-hidden="true"><path class="request-line" d="M85 10H7m7-5-7 5 7 5"/><path class="response-line" d="M7 23h78m-7-5 7 5-7 5"/></svg><small>응답 →</small></div>
+            <button type="button" id="agent-supervisor" class="agent-card supervisor-card" data-agent="supervisor"><div class="agent-top"><span class="avatar supervisor">S</span><span class="agent-status unknown">확인 중</span></div><h3>Supervisor</h3><div class="agent-role">작업 조정 · 결과 연결</div><div class="agent-endpoint mono">—</div><div class="agent-footer"><span class="tag green">Orchestrator</span><span class="agent-latency">—</span></div><div class="node-state" data-node="workflow">작업 대기</div></button>
+            <div class="connector" id="edge-skku"><span>요청 →</span><svg viewBox="0 0 90 32" aria-hidden="true"><path class="request-line" d="M7 10h78m-7-5 7 5-7 5"/><path class="response-line" d="M85 23H7m7-5-7 5 7 5"/></svg><small>응답 ←</small></div>
+            <button type="button" id="agent-skku_robot" class="agent-card" data-agent="skku_robot"><div class="agent-top"><span class="avatar skku">K</span><span class="agent-status unknown">확인 중</span></div><h3>성균관대 Agent</h3><div class="agent-role">로봇 경로 · Twinverse MCP</div><div class="agent-endpoint mono">—</div><div class="agent-footer"><span class="tag blue">MCP · plan_only</span><span class="agent-latency">—</span></div><div class="node-state" data-node="T2">작업 대기</div></button>
+          </div>
+          <div id="communication-focus" class="communication-focus">통신 기록을 선택하면 보내는 쪽과 받는 쪽을 강조합니다.</div>
+        </section>
+
+        <section class="panel launch-panel" aria-label="새 작업 실행">
+          <div class="panel-header"><div><h2>새 작업 실행</h2><p>Agent·기능 직접 실행이 기본입니다.</p></div><span class="step-label">DIRECT</span></div>
+          <form id="launch-form" novalidate>
+            <div class="workflow-options">
+              <div><label for="workflow-mode">실행 방식</label><select id="workflow-mode"><option value="direct" selected>Agent·기능 직접 실행 (기본)</option><option value="process_then_robot">공정 계획 → 로봇 경로</option></select></div>
+              <div id="direct-agent-field"><label for="target-agent">실행 Agent</label><select id="target-agent"><option value="skku_robot" selected>성균관대 Agent</option></select></div>
+              <div id="direct-capability-field"><label for="capability">실행 기능</label><select id="capability"><option value="robot_path_planning" selected>로봇 경로 계획</option></select></div>
+            </div>
+            <button id="open-settings" type="button" class="secondary-button">입력·Unity 설정</button>
+            <button id="launch" type="submit" class="primary-button"><span>작업 실행</span><span>→</span></button>
+            <dialog id="launch-settings" class="launch-settings" aria-labelledby="settings-title">
+            <div class="settings-heading"><div><h2 id="settings-title">작업 입력 설정</h2><p>선택한 Agent와 기능에 전달할 입력입니다.</p></div><button id="close-settings" type="button" class="secondary-button">설정 완료</button></div>
+            <label for="part">부품 ID</label><input id="part" name="part" value="skku/workpiece_01" maxlength="200" spellcheck="false">
+            <div class="form-row"><div><label for="source">출발 개체</label><input id="source" name="source" value="skku/workpiece_01" maxlength="200" spellcheck="false"></div><div><label for="destination">목적 설비</label><input id="destination" name="destination" value="skku/work_table_01" maxlength="200" spellcheck="false"></div></div>
+            <label for="goal">작업 목표</label><textarea id="goal" name="goal" rows="2" required maxlength="2000">출발 개체에서 목적 개체까지 로봇 경로를 계획합니다.</textarea>
+            <details id="direct-input" class="advanced-input"><summary>추가 입력 JSON (선택한 기능의 입력 규격)</summary><textarea id="capability-input" rows="3" spellcheck="false" aria-label="기능별 추가 입력 JSON">{}</textarea></details>
+            <label class="preview-option"><input id="unity-preview" type="checkbox" checked>Unity에서 경로 확인·재생</label>
+            <p id="launch-note" class="form-note">공정 계획을 거치지 않고 선택한 Agent의 기능을 실행합니다.</p>
+            </dialog>
+          </form>
+        </section>
+      </div>
+
+      <section id="execution-summary" class="panel execution-panel" aria-label="선택한 작업 실행 단계">
+        <div class="execution-heading"><div><h2>선택한 작업의 실행 결과</h2><p id="execution-route">Supervisor → 성균관대 → Twinverse → Unity</p></div><strong id="execution-status">작업 대기</strong></div>
+        <div id="execution-stages" class="execution-stages"></div>
+        <div id="execution-facts" class="execution-facts">새 작업을 실행하면 경로 발행과 Unity 확인 결과가 표시됩니다.</div>
+        <section id="cau-result" class="cau-result" aria-label="공정 계획 결과와 로봇 입력 연결" hidden>
+          <div class="cau-result-heading"><strong id="cau-result-title">중앙대 공정 계획</strong><div id="cau-operations" class="cau-operations"></div><span id="cau-estimate" class="cau-estimate"></span><button id="show-cau-plan" type="button" class="secondary-button">공정 상세</button></div>
+          <div id="cau-handoff" class="cau-handoff"><span class="handoff-field">CAU · machine_id <code id="cau-machine"></code></span><span id="handoff-arrow" class="handoff-arrow">→ Supervisor 변환 →</span><span class="handoff-field">SKKU · destination <code id="skku-destination"></code></span><strong id="handoff-status"></strong></div>
+        </section>
+        <div class="preview-track"><div id="preview-progress"></div></div>
+      </section>
+
+      <div class="section-heading"><div><h2>통신 기록</h2><span id="selected-run-label">작업을 선택해 주세요</span></div><div class="section-actions"><select id="run-select" aria-label="조회할 작업"><option value="">작업 없음</option></select><button id="export" class="secondary-button" disabled>↓ JSON 내보내기</button></div></div>
+      <div class="lower-grid">
+        <section class="panel timeline-panel" aria-label="통신 타임라인"><div class="timeline-toolbar"><div class="filters" role="group" aria-label="기록 종류"><button type="button" class="filter active" data-filter="all">전체</button><button type="button" class="filter" data-filter="requests">요청</button><button type="button" class="filter" data-filter="responses">응답</button><button type="button" class="filter" data-filter="errors">오류</button></div><span id="event-count">0 events</span></div><div id="timeline" class="timeline"><div class="empty-state"><div class="empty-glyph">⇄</div><h3>첫 번째 통신을 기다립니다</h3><p>새 작업을 실행하면 실제 요청과 응답이<br>시간순으로 표시됩니다.</p></div></div><div class="panel-bottom"><span class="small-dot"></span>실제 통신 기록<span>메모리 보관 · 서버 재시작 시 초기화</span></div></section>
+        <section class="panel inspector-panel" aria-label="통신 상세"><div class="inspector-header"><div><span class="eyebrow">MESSAGE INSPECTOR</span><h2 id="detail-title">통신 상세</h2></div><button id="copy" class="icon-button copy-button" disabled title="JSON 복사" aria-label="JSON 복사">⧉</button></div><div class="inspector-tabs" role="tablist" aria-label="상세 정보"><button class="detail-tab active" type="button" role="tab" aria-selected="true" data-tab="payload">데이터</button><button class="detail-tab" type="button" role="tab" aria-selected="false" data-tab="state">작업 상태</button><button class="detail-tab" type="button" role="tab" aria-selected="false" data-tab="artifacts">결과물</button></div><div id="artifact-picker" class="artifact-picker" hidden></div><div id="detail-meta" class="detail-meta">왼쪽 기록이나 에이전트를 선택하세요.</div><pre id="payload" class="json-view" tabindex="0" aria-label="선택한 JSON 데이터">// 요청, 응답, Agent Card를 여기서 확인할 수 있습니다.</pre><div class="panel-bottom"><span>JSON</span><span id="payload-size">—</span></div></section>
+      </div>
+      <footer class="page-footer"><span>A2A Console <span>·</span> Super Agent</span><span id="updated-at">연결 대기 중</span></footer>
+    </div>
+  </main>
+  <div id="toast" class="toast" role="status" hidden></div>
+</body>
+</html>

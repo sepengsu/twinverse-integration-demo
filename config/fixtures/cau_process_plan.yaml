@@ -1,0 +1,53 @@
+process_plan:
+  plan_id: PP-001
+  version: "1.0"
+  operations:
+    - operation_id: OP-001
+      name: load
+      description: Load the workpiece onto the selected machine.
+      resource_id: Machine_01
+      estimated_duration_seconds: 30
+      parameters:
+        fixture: Fixture_A
+    - operation_id: OP-002
+      name: machining
+      description: Execute the primary machining operation.
+      resource_id: Machine_01
+      estimated_duration_seconds: 300
+      parameters:
+        spindle_speed_rpm: 12000
+        feed_rate_mm_min: 800
+    - operation_id: OP-003
+      name: unload
+      description: Unload the completed workpiece from the machine.
+      resource_id: Machine_01
+      estimated_duration_seconds: 30
+      parameters:
+        inspection_required: true
+
+equipment:
+  selection_id: ES-001
+  selected_equipment:
+    - equipment_id: Machine_01
+      equipment_type: cnc_machine
+      reason: Default deterministic machine for Phase 1 dummy process planning.
+    - equipment_id: Robot_01
+      equipment_type: robot_arm
+      reason: Default material-handling robot for load and unload operations.
+    - equipment_id: Fixture_A
+      equipment_type: fixture
+      reason: Default fixture for Part_A.
+
+process_information:
+  information_id: PI-001
+  supported_processes:
+    - load
+    - machining
+    - unload
+  supported_materials:
+    - aluminum
+    - steel
+    - plastic
+  notes:
+    - Phase 1 dummy backend only returns deterministic planning data.
+    - No physical robot or shop-floor command is executed.

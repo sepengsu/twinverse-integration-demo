@@ -1,0 +1,188 @@
+/* The recording view keeps the graph and its actual messages in one viewport. */
+.monitor .sidebar,.monitor .page-heading,.monitor .stats,.monitor .page-footer{display:none}
+.monitor main{margin:0}
+.monitor .content{padding:12px 16px;width:100%;max-width:none}
+.monitor .topbar{height:44px;padding:0 16px;flex-shrink:0}
+.monitor .upper-grid{display:contents}
+.monitor .network-panel{display:block}
+.monitor .launch-panel>.panel-header{display:none}
+.monitor .launch-panel form{display:grid;grid-template-columns:minmax(0,1fr) auto 130px;align-items:end;gap:12px;padding:10px 14px}
+.monitor .launch-panel form>.workflow-options{grid-column:1;grid-row:auto;grid-template-columns:1.2fr 1fr 1fr;gap:12px;margin:0}
+.monitor .workflow-options label{margin-bottom:4px;font-size:11px;color:#526775}
+.monitor .workflow-options select{padding:7px 8px;height:33px;font-size:12px}
+.monitor #open-settings,.monitor #launch{grid-row:auto;grid-column:auto;height:33px;margin:0;font-size:12px}
+.monitor #launch{padding:7px 12px}
+.launch-settings{margin:auto;width:min(720px,calc(100% - 32px));max-height:85dvh;overflow:auto;padding:24px;border:1px solid #cfddd8;border-radius:12px;box-shadow:0 18px 80px #172c3650}
+.launch-settings::backdrop{background:#122c3970;backdrop-filter:blur(2px)}
+.settings-heading{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:22px}
+.settings-heading h2{font-size:18px;color:#294c40}
+.settings-heading p{font-size:12px;color:#768a91;margin-top:6px}
+.monitor .launch-settings label{font-size:12px}
+.monitor .launch-settings input,.monitor .launch-settings textarea{font-size:13px}
+.monitor .launch-settings textarea{height:auto;min-height:70px;resize:vertical}
+.monitor .launch-settings label[for=goal]{margin-top:16px}
+.monitor .launch-settings .form-row{margin:14px 0;display:grid;grid-template-columns:1fr 1fr}
+.monitor .launch-settings .form-note{display:block;font-size:11px}
+.monitor .launch-settings .preview-option{margin:16px 0 0}
+.monitor .launch-settings .advanced-input{margin:16px 0}
+.monitor .network-panel>.panel-header{padding:10px 14px 0;align-items:center}
+.network-tools{display:flex;align-items:center;gap:14px}
+.flow-legend{display:flex;align-items:center;gap:6px;color:#657d87;font-size:11px}
+.flow-legend i{height:3px;width:18px;border-radius:4px}
+.flow-legend .request-key{background:#d28a30}
+.flow-legend .response-key{background:#22816d;margin-left:8px}
+#follow-live{font-size:11px;padding:5px 9px}
+#follow-live[aria-pressed=true]{border-color:#96c5b5;background:#edf8f2;color:#216951}
+.communication-summary{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:8px 14px}
+.activity,.latest-response{padding:8px 12px;background:#f4f7f9;border:1px solid #e6ecef;border-radius:7px;min-width:0;display:grid;gap:3px}
+.activity>span,.latest-response>span{color:#6d818d;font-size:10px}
+.activity strong,.latest-response strong{font-size:18px;line-height:1.25;color:#294b5a;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.activity small,.latest-response small{font-size:11px;color:#768a94;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.activity.busy{background:#fff6e8;border-color:#eac788}
+.activity.busy strong{color:#98611d}
+.latest-response.received{background:#eef8f2;border-color:#bad9ca}
+.latest-response.received strong{color:#1e7156}
+.activity.failed,.latest-response.failed{background:#fff0ee;border-color:#df9489}
+.activity.failed strong,.latest-response.failed strong{color:#b05b49}
+.monitor .diagram{padding:0 14px 8px;min-height:0;gap:0}
+.monitor .agent-card{padding:8px 12px 0;max-width:none;border-radius:7px}
+.monitor .agent-top{margin-bottom:4px}
+.monitor .avatar{width:24px;height:24px;font-size:13px;border-radius:6px}
+.monitor .agent-status{font-size:10px}
+.monitor .agent-card h3{font-size:15px}
+.monitor .agent-role{margin-top:3px;font-size:10px}
+.monitor .agent-endpoint,.monitor .agent-footer{display:none}
+.monitor .node-state{margin-top:5px;padding:6px 0;font-size:11px;font-weight:500}
+.monitor .agent-card.working{border-color:#dda757;box-shadow:0 0 0 2px #fff2da}
+.monitor .agent-card.working .node-state{color:#a36a25}
+.monitor .agent-card.focus-source{border-color:#419b82;background:#f0faf5;box-shadow:inset 0 0 0 1px #419b82}
+.monitor .agent-card.focus-target{border-color:#89b9a7}
+.monitor .network-panel[data-direction=request] .agent-card.focus-source{border-color:#d28a30;background:#fff8ee;box-shadow:inset 0 0 0 1px #d28a30}
+.monitor .connector{width:84px;flex-shrink:0}
+.monitor .connector>span,.monitor .connector small{font-size:10px}
+.monitor .connector>span{color:#ae7e3c}
+.monitor .connector small{color:#478671}
+.monitor .connector svg{stroke-width:1.6;margin:3px 0}
+.monitor .connector.completed .request-line{stroke:#c5cfd3}
+.monitor .connector.completed .response-line{stroke:#8cb9ab}
+.monitor .connector.active .request-line,.monitor .connector.focus-request .request-line{stroke:#d28a30;stroke-width:3;stroke-dasharray:6 4;animation:flow 1s linear infinite}
+.monitor .connector.focus-response .response-line{stroke:#22816d;stroke-width:3;stroke-dasharray:6 4;animation:flow 1s linear infinite}
+.monitor .connector.focus-response .request-line,.monitor .connector.focus-request .response-line{stroke:#dce4e7;stroke-width:1.4;animation:none}
+.monitor .connector.failed .response-line{stroke:#bb6756}
+.communication-focus{padding:6px 14px;border-top:1px solid #e4ece8;font-size:11px;color:#627c87;background:#fafcfc;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.communication-focus.request{color:#99611c;background:#fff8ee}
+.communication-focus.response{color:#246c55;background:#f0f8f4}
+.communication-focus.failed{color:#b05b49;background:#fff0ee}
+.monitor .execution-panel{margin:0;padding:9px 14px}
+.monitor .execution-heading{gap:10px}
+.monitor .execution-heading h2{display:none}
+.monitor .execution-heading p{font-size:11px;margin:0;line-height:1.5}
+.monitor .execution-heading>strong{font-size:13px;white-space:nowrap}
+.monitor .execution-stages{gap:8px;margin:7px 0}
+.monitor .execution-step{padding:5px 9px;gap:7px}
+.monitor .execution-step>span{width:20px;height:20px;line-height:20px;font-size:11px;flex-shrink:0}
+.monitor .execution-step strong{font-size:12px}
+.monitor .execution-step small{font-size:10px}
+.monitor .execution-facts{gap:3px 12px;font-size:11px;line-height:1.4}
+.monitor .runtime-message{display:none}
+.monitor .preview-track{margin-top:6px;height:3px}
+.monitor .section-heading{margin:0;gap:8px}
+.monitor .section-heading h2{font-size:13px}
+.monitor .section-heading>div>span{font-size:11px}
+.monitor .section-actions select{font-size:11px;max-width:240px}
+.monitor .section-actions .secondary-button{font-size:11px}
+.monitor .lower-grid{grid-template-columns:1fr 1fr;gap:12px}
+.monitor .timeline-toolbar{height:40px;padding:0 12px}
+.monitor .filter{font-size:12px;padding:5px 9px}
+.monitor .timeline{padding:6px 10px}
+.monitor .event-row{padding:8px 0}
+.monitor .event-title{font-size:12px}
+.monitor .event-summary{font-size:11px}
+.monitor .event-time{font-size:10px}
+.monitor .event-badge{font-size:9px}
+.monitor .inspector-header{padding:9px 14px;min-height:46px}
+.monitor .inspector-header .eyebrow{display:none}
+.monitor .inspector-header h2{font-size:13px}
+.monitor .detail-tab{font-size:12px;padding:8px 12px}
+.monitor .detail-meta{font-size:11px;padding:8px 14px;flex-shrink:0}
+.monitor .json-view{font-size:12px;line-height:1.55;padding:10px 14px;white-space:pre-wrap;overflow-wrap:anywhere;min-height:0}
+.monitor .panel-bottom{height:24px;min-height:24px;font-size:9px;padding:0 12px;flex-shrink:0}
+.monitor .artifact-picker{flex-shrink:0;flex-wrap:wrap;padding:7px 14px}
+.monitor .error-banner{margin:0}
+.cau-result{margin-top:7px;padding:7px 9px;border:1px solid #e4c998;border-radius:6px;background:#fffaf1}
+.cau-result-heading{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.cau-result-heading>strong{font-size:12px;color:#8e612c;white-space:nowrap}
+.cau-operations{display:flex;align-items:center;gap:6px}
+.cau-operation{font-size:12px;color:#526977;white-space:nowrap}
+.cau-operation b{color:#8e612c;font-size:11px}
+.operation-arrow{color:#b59b6e;font-size:12px}
+.cau-estimate{font-size:10px;color:#8b7b60;margin-left:auto;white-space:nowrap}
+.cau-result-heading .secondary-button{font-size:10px;padding:4px 7px}
+.cau-handoff{display:flex;align-items:center;gap:9px;margin-top:6px;font-size:10px;color:#8b8e83;flex-wrap:wrap}
+.handoff-field{display:flex;align-items:center;gap:6px}
+.handoff-field code{font:11px var(--mono);padding:3px 5px;background:#f1f3f3;border-radius:4px;color:#617477}
+.handoff-arrow{font-size:10px;color:#859890}
+.cau-handoff>strong{margin-left:auto;font-size:10px;font-weight:500}
+.cau-handoff.linked .handoff-field code{background:#dff3ea;color:#1d7153;border:1px solid #acd4c0}
+.cau-handoff.linked .handoff-arrow,.cau-handoff.linked>strong{color:#207856}
+.cau-handoff.mismatch>strong{color:#b35b47}
+@media(max-width:959px){.cau-handoff{align-items:flex-start;flex-direction:column}.cau-handoff>strong{margin-left:0}.cau-result-heading{gap:7px}.cau-operations{flex-wrap:wrap}.cau-estimate{margin-left:0}}
+.monitor.presentation .event-title,.monitor.presentation .json-view{font-size:13px}
+@media(min-width:960px){
+  .monitor{height:100dvh;overflow:hidden}
+  .monitor .launch-panel form{padding-top:6px;padding-bottom:6px}
+  .monitor .network-panel>.panel-header{padding-top:6px}
+  .monitor .communication-summary{margin-top:6px;margin-bottom:6px}
+  .monitor .activity,.monitor .latest-response{padding:6px 12px;gap:2px}
+  .monitor .activity strong,.monitor .latest-response strong{font-size:16px}
+  .monitor .avatar{width:20px;height:20px}
+  .monitor .agent-top{margin-bottom:3px}
+  .monitor .node-state{margin-top:3px;padding-top:4px;padding-bottom:4px}
+  .monitor .communication-focus{padding-top:4px;padding-bottom:4px}
+  .monitor .execution-panel{padding-top:7px;padding-bottom:7px}
+  .monitor .execution-stages{margin-top:5px;margin-bottom:5px}
+  .monitor .execution-step{padding-top:4px;padding-bottom:4px}
+  .monitor .inspector-header{padding-top:5px;padding-bottom:5px;min-height:34px;height:34px}
+  .monitor .inspector-tabs{height:32px;flex-shrink:0}
+  .monitor .detail-tab{padding-top:6px;padding-bottom:6px}
+  .monitor .detail-meta{padding-top:4px;padding-bottom:4px}
+  .monitor .artifact-picker{padding-top:4px;padding-bottom:4px}
+  .monitor .artifact-picker button{padding-top:4px;padding-bottom:4px}
+  .monitor .panel-bottom{height:20px;min-height:20px}
+  .monitor main{height:100%;display:flex;flex-direction:column;min-height:0}
+  .monitor .content{flex:1;min-height:0;display:flex;flex-direction:column;gap:8px}
+  .monitor .content>.launch-panel,.monitor .launch-panel{order:0;flex-shrink:0}
+  .monitor .network-panel{order:1;flex-shrink:0}
+  .monitor .execution-panel{order:2;flex-shrink:0}
+  .monitor .section-heading{order:3;flex-shrink:0}
+  .monitor .lower-grid{order:4;flex:1;min-height:0}
+  .monitor .timeline-panel,.monitor .inspector-panel{height:100%;min-height:0}
+}
+@media(max-width:959px){
+  .monitor .content{display:flex;flex-direction:column;gap:12px}
+  .monitor .launch-panel{order:0}
+  .monitor .network-panel{order:1}
+  .monitor .execution-panel{order:2}
+  .monitor .section-heading{order:3}
+  .monitor .lower-grid{order:4;grid-template-columns:1fr}
+  .monitor .launch-panel form{grid-template-columns:1fr 1fr}
+  .monitor .launch-panel form>.workflow-options{grid-column:1/-1;grid-template-columns:1fr}
+  .monitor .topbar{height:auto;min-height:44px;flex-wrap:wrap;gap:8px;padding:8px 12px}
+  .monitor .topbar-right{gap:6px}
+  .monitor .breadcrumb{font-size:10px}
+  .monitor .runtime-pill,.monitor .live{font-size:10px}
+  .monitor .communication-summary{grid-template-columns:1fr}
+  .monitor .network-panel .panel-header{flex-wrap:wrap;gap:8px}
+  .monitor .network-tools{gap:8px}
+  .monitor .diagram{padding:10px 14px}
+  .monitor .agent-card{width:100%;flex:auto}
+  .monitor .connector{width:48px}
+  .monitor .section-heading{flex-wrap:wrap}
+  .monitor .section-heading>div:first-child{display:block}
+  .monitor .section-actions{max-width:none;width:100%;justify-content:space-between}
+  .monitor .section-actions select{max-width:190px}
+  .monitor .execution-heading{flex-wrap:wrap}
+  .monitor .timeline-panel,.monitor .inspector-panel{height:380px}
+  .monitor .event-title{font-size:11px}
+  .monitor .event-summary{font-size:10px}
+}

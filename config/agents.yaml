@@ -1,0 +1,67 @@
+environment: development
+
+supervisor:
+  name: super-agent
+  host: 127.0.0.1
+  port: 9000
+  log_level: INFO
+  request_timeout_seconds: 60
+
+registry:
+  allow_first_candidate_for_duplicates: false
+
+pilot:
+  default_source: InputStation
+
+llm:
+  supervisor_agent_model: openrouter:gemini-3-flash-preview
+  supervisor_agent_kwargs:
+    reasoning_effort: minimal
+
+agents:
+  skku_robot:
+    name: skku-twinverse-agent
+    enabled: true
+    mode: remote
+    description: SKKU Twinverse robot and digital-twin agent
+    capabilities:
+      - robot_path_planning
+      - robot_state_query
+      - path_validation
+    a2a:
+      host: 127.0.0.1
+      port: 9001
+      base_url: http://127.0.0.1:9001
+      path_prefix: ""
+      timeout_seconds: 60
+      retries: 2
+      streaming: false
+    backend:
+      type: mcp
+    mcp:
+      transport: streamable-http
+      url: http://127.0.0.1:8000/mcp
+      timeout_seconds: 60
+
+  cau_process:
+    name: cau-process-agent
+    enabled: true
+    mode: dummy
+    description: Dummy CAU manufacturing-process agent exposed through A2A
+    capabilities:
+      - process_planning
+      - equipment_selection
+      - process_information
+    a2a:
+      host: 127.0.0.1
+      port: 9002
+      base_url: http://127.0.0.1:9002
+      path_prefix: ""
+      timeout_seconds: 60
+      retries: 2
+      streaming: false
+    backend:
+      type: dummy
+    dummy:
+      fixture_file: config/fixtures/cau_process_plan.yaml
+    mcp: null
